@@ -13,14 +13,14 @@ SoftwareSerial bluetooth(BLUETOOTH_TX, BLUETOOTH_RX);
 ArduinoBlue phone(bluetooth);
 
 //MOTORES
-#define pef 10 // motor esquerdo para frente
-#define peb 11 // motor esquerdo pra tras
-#define pdf 12 // motor direito para frente
-#define pdb 13 // motor direito para tras
+#define PEF 10 // motor esquerdo para frente
+#define PEB 11 // motor esquerdo pra tras
+#define PDF 12 // motor direito para frente
+#define PDB 13 // motor direito para tras
 
 
 //BUZZER
-#define buzzer 9
+#define BUZZER 9
 int freqBuzzer = 0;
 
 
@@ -31,11 +31,17 @@ DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
 
 // ULTRASOM
 //Define os pinos para o trigger e echo
-#define pino_trigger 5
-#define pino_echo 6
+#define PINTRIGGER 5
+#define PINECHO 6
 
 //Inicializa o sensor nos pinos definidos acima
-Ultrasonic ultrasonic(pino_trigger, pino_echo);
+Ultrasonic ultrasonic(PINTRIGGER, PINECHO);
+
+//PHOTORESISTOR
+#define PHOTO 0
+
+//LEDS
+int leds[] = {2, 4};
 
 
 float AC = 0;
@@ -50,15 +56,15 @@ void move_frente(int tempo) {
   Serial.print("Indo pra frente por ");
   Serial.print(tempo);
   Serial.println(" segundos");
-  digitalWrite(pdb, LOW);
-  digitalWrite(pdf, HIGH);
-  digitalWrite(pef, HIGH);
-  digitalWrite(peb, LOW);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, HIGH);
+  digitalWrite(PEF, HIGH);
+  digitalWrite(PEB, LOW);
   delay(tempo * 1000);
-  digitalWrite(pdb, LOW);
-  digitalWrite(pdf, LOW);
-  digitalWrite(pef, LOW);
-  digitalWrite(peb, LOW);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, LOW);
 }
 
 void move_tras(int tempo) {
@@ -66,45 +72,45 @@ void move_tras(int tempo) {
   Serial.print("Indo pra tras por ");
   Serial.print(tempo);
   Serial.println(" segundos");
-  digitalWrite(pdb, HIGH);
-  digitalWrite(pdf, LOW);
-  digitalWrite(pef, LOW);
-  digitalWrite(peb, HIGH);
+  digitalWrite(PDB, HIGH);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, HIGH);
   delay(tempo * 1000);
-  digitalWrite(pdb, LOW);
-  digitalWrite(pdf, LOW);
-  digitalWrite(pef, LOW);
-  digitalWrite(peb, LOW);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, LOW);
   Serial.println("Carro parado!");
 }
 
 void vira_esquerda(int tempo) {
   //VE9900
   //  Serial.println("Girando pra esquerda por" , tempo,  " segundos" );
-  digitalWrite(pdb, HIGH);
-  digitalWrite(pdf, LOW);
-  digitalWrite(pef, HIGH);
-  digitalWrite(peb, LOW);
+  digitalWrite(PDB, HIGH);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, HIGH);
+  digitalWrite(PEB, LOW);
   delay(tempo * 1000);
-  digitalWrite(pdb, LOW);
-  digitalWrite(pdf, LOW);
-  digitalWrite(pef, LOW);
-  digitalWrite(peb, LOW);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, LOW);
   Serial.println("Carro parado!");
 }
 
 void vira_direita(int tempo) {
   //VD9900
   //   Serial.println("Girando pra direita" , tempo,  " segundos" );
-  digitalWrite(pdb, LOW);
-  digitalWrite(pdf, HIGH);
-  digitalWrite(pef, LOW);
-  digitalWrite(peb, HIGH);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, HIGH);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, HIGH);
   delay(tempo * 1000);
-  digitalWrite(pdb, LOW);
-  digitalWrite(pdf, LOW);
-  digitalWrite(pef, LOW);
-  digitalWrite(peb, LOW);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, LOW);
   Serial.println("Carro parado!");
 }
 
@@ -116,22 +122,28 @@ void faz_nada(int tempo) {
 
 void buzzer_freq(int freq) {
   //BF1024
-  //  Serial.println("Configurando frequencia do buzzer para frequencia de ", freq);
+  Serial.print("Configurando frequencia do buzzer para frequencia de ");
+  Serial.print(freq);
+  Serial.println("hz");
   freqBuzzer = freq;
 }
 
 void buzzer_toca(int tempo) {
   //TB9900
-  //  Serial.println("Tocando buzzer por" , tempo,  " segundos" );
-  tone(buzzer, freqBuzzer);
+  Serial.print("Tocando buzzer por ");
+  Serial.print(tempo);
+  Serial.println(" segundos" );
+  tone(BUZZER, freqBuzzer);
   delay(tempo*1000);
-  noTone(buzzer);
+  noTone(BUZZER);
 }
 
 void get_luminosidade() {
   //GL0000
-  //  Serial.println("Pegando luminosidade" );
-  return 2.5f;
+  Serial.print("Pegando luminosidade: ");
+  int light = analogRead(PHOTO);
+  Serial.println(light);
+  AC = light;
 }
 
 void get_umidade() {
@@ -152,9 +164,8 @@ void get_temperatura() {
 
 void get_distancia() {
   // GD0000
-  float cmMsec;
   long microsec = ultrasonic.timing();
-  cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
+  float cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
 
   //Exibe informacoes no serial monitor
   Serial.print("Distancia em cm: ");
@@ -164,12 +175,16 @@ void get_distancia() {
 
 void led_liga(int pos) {
   //LL9900
-  //  Serial.println("Ligando LED na posição ", pos );
+  Serial.print("Ligando LED na posição: ");
+  Serial.println(pos);
+  digitalWrite(leds[pos], HIGH);
 }
 
 void led_desliga(int pos) {
   //LD9900
-  //  Serial.println("Desligando LED na posição " , pos );
+  Serial.print("Desligando LED na posição: ");
+  Serial.println(pos);
+  digitalWrite(leds[pos], LOW);
 }
 
 void cmp(int val) {
@@ -342,12 +357,15 @@ void setup() {
   
   delay(100);
 
-  pinMode(pef, OUTPUT);
-  pinMode(peb, OUTPUT);
-  pinMode(pdf, OUTPUT);
-  pinMode(pdb, OUTPUT);
+  pinMode(PEF, OUTPUT);
+  pinMode(PEB, OUTPUT);
+  pinMode(PDF, OUTPUT);
+  pinMode(PDB, OUTPUT);
+  for(auto i : leds){
+    pinMode(i, OUTPUT);
+  }
 
-  pinMode(buzzer, OUTPUT);
+  pinMode(BUZZER  , OUTPUT);
 
   Serial.println("OK!");
   return 0;
