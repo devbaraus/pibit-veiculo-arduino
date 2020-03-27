@@ -49,6 +49,7 @@ bool E = false;
 bool L = false;
 bool G = false;
 int PC = 0;
+bool EN = false;
 
 void move_frente(int tempo) {
   //MF9900
@@ -56,10 +57,10 @@ void move_frente(int tempo) {
   Serial.print("Indo pra frente por ");
   Serial.print(tempo);
   Serial.println(" segundos");
-  digitalWrite(PDB, LOW);
-  digitalWrite(PDF, HIGH);
-  digitalWrite(PEF, HIGH);
-  digitalWrite(PEB, LOW);
+   digitalWrite(PDB, HIGH);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, HIGH);
   delay(tempo * 1000);
   digitalWrite(PDB, LOW);
   digitalWrite(PDF, LOW);
@@ -72,23 +73,9 @@ void move_tras(int tempo) {
   Serial.print("Indo pra tras por ");
   Serial.print(tempo);
   Serial.println(" segundos");
-  digitalWrite(PDB, HIGH);
-  digitalWrite(PDF, LOW);
-  digitalWrite(PEF, LOW);
-  digitalWrite(PEB, HIGH);
-  delay(tempo * 1000);
-  digitalWrite(PDB, LOW);
-  digitalWrite(PDF, LOW);
-  digitalWrite(PEF, LOW);
-  digitalWrite(PEB, LOW);
-  Serial.println("Carro parado!");
-}
 
-void vira_esquerda(int tempo) {
-  //VE9900
-  //  Serial.println("Girando pra esquerda por" , tempo,  " segundos" );
-  digitalWrite(PDB, HIGH);
-  digitalWrite(PDF, LOW);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, HIGH);
   digitalWrite(PEF, HIGH);
   digitalWrite(PEB, LOW);
   delay(tempo * 1000);
@@ -99,10 +86,13 @@ void vira_esquerda(int tempo) {
   Serial.println("Carro parado!");
 }
 
-void vira_direita(int tempo) {
-  //VD9900
-  //   Serial.println("Girando pra direita" , tempo,  " segundos" );
-  digitalWrite(PDB, LOW);
+void vira_esquerda(int tempo) {
+  //VE9900
+  Serial.print("Virando para a esquerda por ");
+  Serial.print(tempo);
+  Serial.println(" segundos");
+
+    digitalWrite(PDB, LOW);
   digitalWrite(PDF, HIGH);
   digitalWrite(PEF, LOW);
   digitalWrite(PEB, HIGH);
@@ -114,9 +104,30 @@ void vira_direita(int tempo) {
   Serial.println("Carro parado!");
 }
 
+void vira_direita(int tempo) {
+  //VD9900
+  Serial.print("Virando para a direita por ");
+  Serial.print(tempo);
+  Serial.println(" segundos");
+
+
+    digitalWrite(PDB, HIGH);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, HIGH);
+  digitalWrite(PEB, LOW);
+  delay(tempo * 1000);
+  digitalWrite(PDB, LOW);
+  digitalWrite(PDF, LOW);
+  digitalWrite(PEF, LOW);
+  digitalWrite(PEB, LOW);
+  Serial.println("Carro parado!");
+}
+
 void faz_nada(int tempo) {
   //FN9900
-  // Serial.println("Fazendo nada por " , tempo,  " segundos" );
+  Serial.print("Fazendo nada por ");
+  Serial.print(tempo);
+  Serial.println(" segundos" );
   delay(tempo * 1000);
 }
 
@@ -134,7 +145,7 @@ void buzzer_toca(int tempo) {
   Serial.print(tempo);
   Serial.println(" segundos" );
   tone(BUZZER, freqBuzzer);
-  delay(tempo*1000);
+  delay(tempo * 1000);
   noTone(BUZZER);
 }
 
@@ -192,7 +203,7 @@ void cmp(int val) {
   //  Serial.println("Comparando AC com o valor " , val );
   E = AC == val;
   L = AC < val;
-  G = AC > val; 
+  G = AC > val;
 }
 
 void jmp(int end) {
@@ -204,7 +215,7 @@ void jmp(int end) {
 void jne(int end) {
   //NE9999
   // Serial.println("Pulando caso seja diferente para o endereço " , end );
-  if(!E){
+  if (!E) {
     PC = end;
   }
 }
@@ -212,7 +223,7 @@ void jne(int end) {
 void je(int end) {
   //JE9999
   // Serial.println("Pulando caso seja igual para o endereço " , end );
-  if(E){
+  if (E) {
     PC = end;
   }
 }
@@ -220,7 +231,7 @@ void je(int end) {
 void jl(int end) {
   //JL9999
   // Serial.println("Pulando caso seja menor para o endereço " , end );
-  if(L){
+  if (L) {
     PC = end;
   }
 }
@@ -228,7 +239,7 @@ void jl(int end) {
 void jg(int end) {
   //JG9999
   //   Serial.println("Pulando caso seja maior para o endereço " , end );
-  if(G){
+  if (G) {
     PC = end;
   }
 }
@@ -236,7 +247,7 @@ void jg(int end) {
 void jge(int end) {
   //GE9999
   // Serial.println("Pulando caso seja maior ou igual para o endereço " , end );
-  if(G && E){
+  if (G && E) {
     PC = end;
   }
 }
@@ -244,7 +255,7 @@ void jge(int end) {
 void jle(int end) {
   //LE9999
   // Serial.println("Pulando caso seja menor ou igual para o endereço " , end );
-  if(L && E){
+  if (L && E) {
     PC = end;
   }
 }
@@ -346,7 +357,20 @@ void execcommands(String op, int operando) {
 }
 
 
-//char buffercomandos[] = {"MF0045", "FN9900", "GT0000", "KM0000"};
+String buffercomandos[0];
+String str;
+
+void split(String str) {
+  int pos = 0;
+  for (int i = 0; i <= str.length(); i++) {
+    if (str[i] == ';' || i == str.length()) {
+      buffercomandos[i] = str.substring(pos, i++);
+      pos = i;
+      buffercomandos[i] = "\f";
+      EN = true;
+    }
+  }
+}
 
 void setup() {
   // put your setup code here, to run once:
@@ -354,28 +378,50 @@ void setup() {
   Serial.begin(9600);
   bluetooth.begin(9600);
   dht.begin();
-  
+
   delay(100);
 
   pinMode(PEF, OUTPUT);
   pinMode(PEB, OUTPUT);
   pinMode(PDF, OUTPUT);
   pinMode(PDB, OUTPUT);
-  for(auto i : leds){
+  for (auto i : leds) {
     pinMode(i, OUTPUT);
   }
 
+  
   pinMode(BUZZER  , OUTPUT);
+  Serial.println("READY TO GO!");
 
-  Serial.println("OK!");
-  return 0;
+  for(int i = 0; i < sizeof(buffercomandos); i++){
+    buffercomandos[i] = "";
+  }
+  buffercomandos[0] = "VD2"; 
+  buffercomandos[1] = "VD4"; 
+  buffercomandos[2] = "\f";
+  EN = true;
+  return;
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  String str = phone.getText();
-  //  String str = "MF0045";
-  String opcode = str.substring(0, 2);
-  int operando = str.substring(2).toInt();
-  execcommands(opcode, operando);
+  if (!EN) {
+    str = phone.getText();
+    if(str != ""){
+       split(str);
+    }
+  } else {
+    String com = buffercomandos[PC];
+    if(com == "\f"){
+      EN = false;
+      PC = 0;
+    }
+    String opcode = com.substring(0, 2);
+    int operando = com.substring(2).toInt();
+    execcommands(opcode, operando);
+    Serial.print(opcode);
+    Serial.print(operando);
+    Serial.println(com);
+    PC++;
+  }
 }
