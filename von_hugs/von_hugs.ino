@@ -1,7 +1,8 @@
 #include <SoftwareSerial.h>
-#include <ArduinoBlue.h>
 #include "DHT.h"
 #include <Ultrasonic.h>
+
+
 
 // BLUETOOTH
 // Bluetooth TX -> Arduino D8
@@ -10,7 +11,6 @@
 #define BLUETOOTH_RX 7
 
 SoftwareSerial bluetooth(BLUETOOTH_TX, BLUETOOTH_RX);
-ArduinoBlue phone(bluetooth);
 
 //MOTORES
 #define PEF 10 // motor esquerdo para frente
@@ -44,20 +44,23 @@ Ultrasonic ultrasonic(PINTRIGGER, PINECHO);
 int leds[] = {2, 4};
 
 
-float AC = 0;
+int AC = 0;
 bool E = false;
 bool L = false;
 bool G = false;
 int PC = 0;
-bool EN = false;
+char MEM[20][7];
+
+
 
 void move_frente(int tempo) {
   //MF9900
   // tempo em segundos
+
   Serial.print("Indo pra frente por ");
   Serial.print(tempo);
   Serial.println(" segundos");
-   digitalWrite(PDB, HIGH);
+  digitalWrite(PDB, HIGH);
   digitalWrite(PDF, LOW);
   digitalWrite(PEF, LOW);
   digitalWrite(PEB, HIGH);
@@ -66,6 +69,7 @@ void move_frente(int tempo) {
   digitalWrite(PDF, LOW);
   digitalWrite(PEF, LOW);
   digitalWrite(PEB, LOW);
+  PC++;
 }
 
 void move_tras(int tempo) {
@@ -84,6 +88,7 @@ void move_tras(int tempo) {
   digitalWrite(PEF, LOW);
   digitalWrite(PEB, LOW);
   Serial.println("Carro parado!");
+  PC++;
 }
 
 void vira_esquerda(int tempo) {
@@ -92,7 +97,7 @@ void vira_esquerda(int tempo) {
   Serial.print(tempo);
   Serial.println(" segundos");
 
-    digitalWrite(PDB, LOW);
+  digitalWrite(PDB, LOW);
   digitalWrite(PDF, HIGH);
   digitalWrite(PEF, LOW);
   digitalWrite(PEB, HIGH);
@@ -102,6 +107,7 @@ void vira_esquerda(int tempo) {
   digitalWrite(PEF, LOW);
   digitalWrite(PEB, LOW);
   Serial.println("Carro parado!");
+  PC++;
 }
 
 void vira_direita(int tempo) {
@@ -111,7 +117,7 @@ void vira_direita(int tempo) {
   Serial.println(" segundos");
 
 
-    digitalWrite(PDB, HIGH);
+  digitalWrite(PDB, HIGH);
   digitalWrite(PDF, LOW);
   digitalWrite(PEF, HIGH);
   digitalWrite(PEB, LOW);
@@ -121,6 +127,7 @@ void vira_direita(int tempo) {
   digitalWrite(PEF, LOW);
   digitalWrite(PEB, LOW);
   Serial.println("Carro parado!");
+  PC++;
 }
 
 void faz_nada(int tempo) {
@@ -129,6 +136,7 @@ void faz_nada(int tempo) {
   Serial.print(tempo);
   Serial.println(" segundos" );
   delay(tempo * 1000);
+  PC++;
 }
 
 void buzzer_freq(int freq) {
@@ -137,6 +145,7 @@ void buzzer_freq(int freq) {
   Serial.print(freq);
   Serial.println("hz");
   freqBuzzer = freq;
+  PC++;
 }
 
 void buzzer_toca(int tempo) {
@@ -147,6 +156,7 @@ void buzzer_toca(int tempo) {
   tone(BUZZER, freqBuzzer);
   delay(tempo * 1000);
   noTone(BUZZER);
+  PC++;
 }
 
 void get_luminosidade() {
@@ -155,6 +165,7 @@ void get_luminosidade() {
   int light = analogRead(PHOTO);
   Serial.println(light);
   AC = light;
+  PC++;
 }
 
 void get_umidade() {
@@ -163,6 +174,7 @@ void get_umidade() {
   Serial.print("Umidade: ");
   Serial.println(hum);
   AC = hum;
+  PC++;
 }
 
 void get_temperatura() {
@@ -171,6 +183,7 @@ void get_temperatura() {
   Serial.print("Temperatura: ");
   Serial.println(temp);
   AC = temp;
+  PC++;
 }
 
 void get_distancia() {
@@ -182,6 +195,7 @@ void get_distancia() {
   Serial.print("Distancia em cm: ");
   Serial.println(cmMsec);
   AC = cmMsec;
+  PC++;
 }
 
 void led_liga(int pos) {
@@ -189,6 +203,7 @@ void led_liga(int pos) {
   Serial.print("Ligando LED na posição: ");
   Serial.println(pos);
   digitalWrite(leds[pos], HIGH);
+  PC++;
 }
 
 void led_desliga(int pos) {
@@ -196,6 +211,7 @@ void led_desliga(int pos) {
   Serial.print("Desligando LED na posição: ");
   Serial.println(pos);
   digitalWrite(leds[pos], LOW);
+  PC++;
 }
 
 void cmp(int val) {
@@ -204,6 +220,7 @@ void cmp(int val) {
   E = AC == val;
   L = AC < val;
   G = AC > val;
+  PC++;
 }
 
 void jmp(int end) {
@@ -217,6 +234,8 @@ void jne(int end) {
   // Serial.println("Pulando caso seja diferente para o endereço " , end );
   if (!E) {
     PC = end;
+  } else {
+    PC++;
   }
 }
 
@@ -225,6 +244,8 @@ void je(int end) {
   // Serial.println("Pulando caso seja igual para o endereço " , end );
   if (E) {
     PC = end;
+  } else {
+    PC++;
   }
 }
 
@@ -233,6 +254,8 @@ void jl(int end) {
   // Serial.println("Pulando caso seja menor para o endereço " , end );
   if (L) {
     PC = end;
+  } else {
+    PC++;
   }
 }
 
@@ -241,6 +264,8 @@ void jg(int end) {
   //   Serial.println("Pulando caso seja maior para o endereço " , end );
   if (G) {
     PC = end;
+  } else {
+    PC++;
   }
 }
 
@@ -249,6 +274,8 @@ void jge(int end) {
   // Serial.println("Pulando caso seja maior ou igual para o endereço " , end );
   if (G && E) {
     PC = end;
+  } else {
+    PC++;
   }
 }
 
@@ -257,6 +284,8 @@ void jle(int end) {
   // Serial.println("Pulando caso seja menor ou igual para o endereço " , end );
   if (L && E) {
     PC = end;
+  } else {
+    PC++;
   }
 }
 
@@ -264,36 +293,54 @@ void load(int end) {
   //LO9999
   // Serial.println("Carregando dado do endereço " , end );
   AC = end;
+  PC++;
 }
 
 void store(int end) {
   //ST9999
   // Serial.println("Guardando dado no endereço " , end );
-  end = AC;
+  String buff = String(AC);
+  buff.toCharArray(MEM[end], 7);
+  PC++;
+  return;
 }
 
 void add(int val) {
   //AD9999
   //  Serial.println("Adicionando ao AC o valor " , val );
   AC = AC + val;
+  PC++;
 }
 
 void sub(int val) {
   //SU9999
   // Serial.println("Subtraindo do AC o valor " , val );
   AC = AC - val;
+  PC++;
 }
 
 void divi(int val) {
   //DI9999
   //  Serial.println("Dividindo o AC pelo valor " , val );
   AC = AC / val;
+  PC++;
 }
 
 void mul(int val) {
   // MU9999
   // Serial.println("Multiplicando o AC pelo valor " , val );
   AC = AC * val;
+  PC++;
+}
+
+void halt() {
+  // MU9999
+  // Serial.println("Multiplicando o AC pelo valor " , val );
+  AC = -1;
+  PC = -1;
+  E = false;
+  L = false;
+  G = false;
 }
 
 void execcommands(String op, int operando) {
@@ -351,33 +398,24 @@ void execcommands(String op, int operando) {
     divi(operando);
   } else if (op == "MU") {
     mul(operando);
-  } else {
-    return;
+  } else if (op == "HT") {
+    halt();
+  } else if (op == "PT") {
+    Serial.print(operando);
   }
 }
 
 
-String buffercomandos[0];
-String str;
 
-void split(String str) {
-  int pos = 0;
-  for (int i = 0; i <= str.length(); i++) {
-    if (str[i] == ';' || i == str.length()) {
-      buffercomandos[i] = str.substring(pos, i++);
-      pos = i;
-      buffercomandos[i] = "\f";
-      EN = true;
-    }
-  }
-}
+int letter = 0;
+int wword = 0;
 
 void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
   bluetooth.begin(9600);
-  dht.begin();
+  //dht.begin();
 
   delay(100);
 
@@ -389,39 +427,35 @@ void setup() {
     pinMode(i, OUTPUT);
   }
 
-  
+
   pinMode(BUZZER  , OUTPUT);
   Serial.println("READY TO GO!");
-
-  for(int i = 0; i < sizeof(buffercomandos); i++){
-    buffercomandos[i] = "";
-  }
-  buffercomandos[0] = "VD2"; 
-  buffercomandos[1] = "VD4"; 
-  buffercomandos[2] = "\f";
-  EN = true;
   return;
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  if (!EN) {
-    str = phone.getText();
-    if(str != ""){
-       split(str);
-    }
-  } else {
-    String com = buffercomandos[PC];
-    if(com == "\f"){
-      EN = false;
+
+  if (bluetooth.available()) {
+    char c = bluetooth.read();
+    if (c == '$') {
       PC = 0;
+      while (PC != -1) {
+        String com = MEM[PC];
+        String opcode = com.substring(0, 2);
+        bool ende = com[2] == '%';
+        int operando;
+        if (ende) {
+          operando = (int) MEM[com.substring(3).toInt()];
+        } else {
+          operando = com.substring(2).toInt();
+        }
+        execcommands(opcode, operando);
+      }
+    } else if (c == ';') {
+      wword = (wword + 1) % 20;
+    } else {
+      MEM[wword][letter] = c;
+      letter = (letter + 1) % 6;
     }
-    String opcode = com.substring(0, 2);
-    int operando = com.substring(2).toInt();
-    execcommands(opcode, operando);
-    Serial.print(opcode);
-    Serial.print(operando);
-    Serial.println(com);
-    PC++;
   }
 }

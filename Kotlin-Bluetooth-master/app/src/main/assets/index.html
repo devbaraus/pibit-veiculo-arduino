@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="google" value="notranslate">
+    <title id = "codigo"></title>
+    <script src="blockly/blockly_compressed.js"></script>
+    <script src="blockly/blocks_compressed.js"></script>
+    <script src="blockly/javascript_compressed.js"></script>
+    <script src="blockly/msg/js/pt-br.js"></script>
+    <script src="generatorblocks.js"></script>
+    <script src="definitionblocks.js"></script>
+    <style>
+        body {
+            background-color: #fff;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            font-weight: normal;
+            font-size: 140%;
+        }
+
+        #red {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background-color: white;
+            border: solid 1px black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id = "teste"></div>
+    <p>
+        <button onclick="showCode()" style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;"
+                unselectable="on">
+            Rodar código
+        </button>
+    </p>
+    <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+    <xml id="toolbox" style="display: none;">
+        <category name="Ação" colour="#5ba55b">
+            <block type="move_frente"></block>
+            <block type="move_tras"></block>
+            <block type="vira_esquerda"></block>
+            <block type="vira_direita"></block>
+            <block type="faz_nada"></block>
+            <block type="buzzer_freq"></block>
+            <block type="buzzer_toca"></block>
+            <block type="led_liga"></block>
+            <block type="led_desliga"></block>
+        </category>
+        <category name="Lógica" colour="#745ba5">
+            <block type="get_luminosidade"></block>
+            <block type="get_umidade"></block>
+            <block type="get_distancia"></block>
+            <block type="get_temperatura"></block>
+
+        </category>
+        <category name="Helpers" colour="#a5755b">
+            <block type="block_if"></block>
+            <block type="block_if_else"></block>
+            <block type="block_loop"></block>
+            <block type="block_cond">
+                <field name="comp">EQ</field>
+            </block>
+            <block type="block_math">
+                <field name="op">PS</field>
+            </block>
+            <block type="math_number">
+                <field name="NUM">1</field>
+            </block>
+
+        </category>
+
+    </xml>
+    <script>
+
+    var workspace = Blockly.inject('blocklyDiv', {media: '../../media', toolbox: document.getElementById('toolbox')})
+        function showCode(){
+        Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+        var code = Blockly.JavaScript.workspaceToCode(workspace)
+        window.androidObj.textToAndroid(code);
+        alert(code)
+        }
+    </script>
+</body>
+
+</html>

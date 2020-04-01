@@ -1,116 +1,145 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="google" value="notranslate" />
-    <title>Blockly Demo:</title>
-    <script src="blockly_compressed.js"></script>
-    <script src="blocks_compressed.js"></script>
-    <script src="javascript_compressed.js"></script>
-    <script src="msg/js/pt-br.js"></script>
-    <script src="generatorblocks.js"></script>
-    <script src="definitionblocks.js"></script>
-    <style>
-      body {
-        background-color: #fff;
-        font-family: sans-serif;
-      }
 
-      h1 {
-        font-weight: normal;
-        font-size: 140%;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="google" value="notranslate" />
+  <title>Blockly Demo:</title>
+  <script src="blockly_compressed.js"></script>
+  <script src="blocks_compressed.js"></script>
+  <script src="javascript_compressed.js"></script>
+  <script src="msg/js/pt-br.js"></script>
+  <script src="generatorblocks.js"></script>
+  <script src="definitionblocks.js"></script>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
 
-      #red {
-        height: 30px;
-        width: 30px;
-        border-radius: 50%;
-        background-color: white;
-        border: solid 1px black;
-      }
-    </style>
-  </head>
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
 
-  <body>
-    <p>
-      <button onclick="showCode()">
-        Show Javascrit
-      </button>
-      <button onclick="runCode()">
-        Run Javascrit
-      </button>
-    </p>
-    <div id="blocklyDiv" style="height: 800px; width: 900px;"></div>
-    <xml id="toolbox" style="display: none;">
-      <category name="Ação" colour="#5ba55b">
-        <block type="move_frente"></block>
-        <block type="move_tras"></block>
-        <block type="vira_esquerda"></block>
-        <block type="vira_direita"></block>
-        <block type="faz_nada"></block>
-        <block type="buzzer_freq"></block>
-        <block type="buzzer_toca"></block>
-        <block type="led_liga"></block>
-        <block type="led_desliga"></block>
-      </category>
-      <category name="Lógica" colour="#745ba5">
-        <block type="get_luminosidade"></block>
-        <block type="get_umidade"></block>
-        <block type="get_distancia"></block>
-        <block type="get_temperatura"></block>
-      </category>
-      <category name="Helpers" colour="#a5755b">
-        <block type="block_loop"></block>
-        <block type="block_if"></block>
-        <block type="block_if_else"></block>
-        <block type="block_cond">
-          <field name="comp">EQ</field>
-        </block>
-        <block type="block_math">
-          <field name="op">PS</field>
-        </block>
-        <block type="math_number">
-          <field name="NUM">123</field>
-        </block>
-      </category>
-    </xml>
-    <script>
-      Array.prototype.last = function() {
-        return this[this.length - 1];
-      };
-      var workspace = Blockly.inject("blocklyDiv", {
-        media: "../../media",
-        toolbox: document.getElementById("toolbox")
-      });
+    #red {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      background-color: white;
+      border: solid 1px black;
+    }
+  </style>
+</head>
 
-      function showCode() {
-        Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-        var code = Blockly.JavaScript.workspaceToCode(workspace);
-        let arr = code
-          .split("\n")
-          .filter(item => !(item === ""))
-          .map(item => item.replace(/( *)/g, ""));
-        let stack = [];
-        for (let i = 0; i < arr.length; i++) {
-          if (/(ne|je|jl|jg|ge|le)/gi.test(arr[i])) {
-            stack.push(i);
-          } else if (arr[i] == "FN$") {
-            arr[stack.last()] = arr[stack.last()].replace("$", "") + i;
-            arr[i] = arr[i].replace("$", "0");
-            stack.pop();
-          } else if (arr[i] == "JM$" && arr[i + 1] != 'FE$') {
-            arr[i] = arr[i].replace("$", stack.last() - 2);
-          } else if (arr[i-1] == "JM$" && arr[i] == "FE$") {
-            arr[stack.last()] = arr[stack.last()] + i;
-            arr[i] = "FN0"
-            stack.pop();
-            stack.push(i - 1)
+<body>
+  <p>
+    <button onclick="showCode()">
+      Show Javascrit
+    </button>
+    <button onclick="runCode()">
+      Run Javascrit
+    </button>
+  </p>
+  <div id="blocklyDiv" style="height: 800px; width: 900px;"></div>
+  <xml id="toolbox" style="display: none;">
+    <category name="Ação" colour="#5ba55b">
+      <block type="move_frente"></block>
+      <block type="move_tras"></block>
+      <block type="vira_esquerda"></block>
+      <block type="vira_direita"></block>
+      <block type="faz_nada"></block>
+      <block type="buzzer_freq"></block>
+      <block type="buzzer_toca"></block>
+      <block type="led_liga"></block>
+      <block type="led_desliga"></block>
+    </category>
+    <category name="Lógica" colour="#745ba5">
+      <block type="get_luminosidade"></block>
+      <block type="get_umidade"></block>
+      <block type="get_distancia"></block>
+      <block type="get_temperatura"></block>
+    </category>
+    <category name="Variaveis" colour="330" custom="VARIABLE"></category>
+
+    <category name="Helpers" colour="#a5755b">
+      <block type="block_loop"></block>
+      <block type="block_if"></block>
+      <block type="block_if_else"></block>
+      <block type="block_cond">
+        <field name="comp">EQ</field>
+      </block>
+      <block type="block_math">
+        <field name="op">PS</field>
+      </block>
+      <block type="math_number">
+        <field name="NUM">123</field>
+      </block>
+    </category>
+  </xml>
+  <script>
+    Array.prototype.last = function () {
+      return this[this.length - 1];
+    };
+    var workspace = Blockly.inject("blocklyDiv", {
+      media: "../../media",
+      toolbox: document.getElementById("toolbox")
+    });
+
+    function showCode() {
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(workspace);
+      let variables = {}
+      let mem = 19;
+      let arr = code
+        .replace(/(\;)/gi, '')
+        .split("\n")
+        .map((item, index) => {
+          // ADICIONA OS VARIAVEIS EM UMA HASH
+          if (/(var *)/gi.test(item)) {
+            let vav = item.replace('var ', '').replace(/( *)/g, "").split(',')
+            vav.forEach((i, index) => variables[i] = mem - index)
+            return ''
           }
+          return item.replace(/( *)/g, "")
+        })
+        .filter(item => !(item === ""))
 
+      console.log(arr)
+      console.log(variables)
+      let stack = [];
+      // SUBISTITUI OS NOMES DAS VARIAVEIS PELA POSICAO NA MEMORIA
+      for (let i = 0; i < arr.length; i++) {
+        if (/(^\w*\=)/gi.test(arr[i].replace(/( *)/g, ''))) {
+          arr.splice(i + 1, 0, `ST${variables[arr[i].match(/(^\w*)/gi)]}`)
+          arr[i] = 'LI' + arr[i].replace(/(^\w*\=)/gi, '').replace(/( *)/g, '')
         }
-    
-        console.log(arr.map((item, index) => item.replace(/(?<=^..)(.*)/g, item => item.padStart(4, "0")) ).join(";")+";HT0000;$")
+        if (!(/(mf|mt|ve|vd|fn|bf|bt|gl|gu|gt|gd|ll|ld|cm|ci|jm|ne|je|jl|jg|ge|le|lo|li|st|ad|su|di|mu|ht|je|jl|jg|ge|le)/gi.test(arr[i]))) {
+          arr[i] = 'LD%' + variables[arr[i]].toString().padStart(3, "0")
+        } else if (/(^\w{2}\$)/gi.test(arr[i]) && arr[i] != "FN$") {
+          arr[i] = arr[i].match(/(^\w{2})/gi) + "%" + variables[arr[i].substring(3)].toString().padStart(3, "0")
+        }
       }
-    </script>
-  </body>
+      // CONFIGURA OS JUMPS
+      for (let i = 0; i < arr.length; i++) {
+        if (/(ne|je|jl|jg|ge|le)/gi.test(arr[i])) {
+          stack.push(i);
+        } else if (arr[i] == "FN$") {
+          arr[stack.last()] = arr[stack.last()].replace("$", "") + i;
+          arr[i] = arr[i].replace("$", "0");
+          stack.pop();
+        } else if (arr[i] == "JM$" && arr[i + 1] != 'FE$') {
+          arr[i] = arr[i].replace("$", stack.last() - 2);
+        } else if (arr[i - 1] == "JM$" && arr[i] == "FE$") {
+          arr[stack.last()] = arr[stack.last()] + i;
+          arr[i] = "FN0"
+          stack.pop();
+          stack.push(i - 1)
+        }
+      }
+      console.log(arr.map((item, index) => item.replace(/(?<=^..)(.*)/g, item => item.padStart(4, "0"))).join(";") + ";HT0000;$")
+    }
+  </script>
+</body>
+
 </html>
