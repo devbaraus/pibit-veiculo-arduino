@@ -40,6 +40,8 @@ Ultrasonic ultrasonic(PINTRIGGER, PINECHO);
 //PHOTORESISTOR
 #define PHOTO 0
 
+#define PALAVRAS 120
+
 //LEDS
 int leds[] = {2, 4};
 
@@ -49,9 +51,10 @@ bool E = false;
 bool L = false;
 bool G = false;
 int PC = 0;
-char MEM[20][7];
+char MEM[PALAVRAS][7];
 
-
+int letter = 0;
+int wword = 0;
 
 void move_frente(int tempo) {
   //MF9900
@@ -223,84 +226,84 @@ void cmp(int val) {
   PC++;
 }
 
-void jmp(int end) {
+void jmp(int ende) {
   //JM9999
   //  Serial.println("Pulando para o endereço " , end );
-  PC = end;
+  PC = ende;
 }
 
-void jne(int end) {
+void jne(int ende) {
   //NE9999
   // Serial.println("Pulando caso seja diferente para o endereço " , end );
   if (!E) {
-    PC = end;
+    PC = ende;
   } else {
     PC++;
   }
 }
 
-void je(int end) {
+void je(int ende) {
   //JE9999
   // Serial.println("Pulando caso seja igual para o endereço " , end );
   if (E) {
-    PC = end;
+    PC = ende;
   } else {
     PC++;
   }
 }
 
-void jl(int end) {
+void jl(int ende) {
   //JL9999
   // Serial.println("Pulando caso seja menor para o endereço " , end );
   if (L) {
-    PC = end;
+    PC = ende;
   } else {
     PC++;
   }
 }
 
-void jg(int end) {
+void jg(int ende) {
   //JG9999
   //   Serial.println("Pulando caso seja maior para o endereço " , end );
   if (G) {
-    PC = end;
+    PC = ende;
   } else {
     PC++;
   }
 }
 
-void jge(int end) {
+void jge(int ende) {
   //GE9999
   // Serial.println("Pulando caso seja maior ou igual para o endereço " , end );
-  if (G && E) {
-    PC = end;
+  if (G || E) {
+    PC = ende;
   } else {
     PC++;
   }
 }
 
-void jle(int end) {
+void jle(int ende) {
   //LE9999
   // Serial.println("Pulando caso seja menor ou igual para o endereço " , end );
-  if (L && E) {
-    PC = end;
+  if (L || E) {
+    PC = ende;
   } else {
     PC++;
   }
 }
 
-void load(int end) {
+void load(int ende) {
   //LO9999
   // Serial.println("Carregando dado do endereço " , end );
-  AC = end;
+  AC = ende;
   PC++;
 }
 
-void store(int end) {
+void store(int ende) {
   //ST9999
   // Serial.println("Guardando dado no endereço " , end );
   String buff = String(AC);
-  buff.toCharArray(MEM[end], 7);
+  buff.toCharArray(MEM[ende], 7);
   PC++;
   return;
 }
@@ -341,6 +344,7 @@ void halt() {
   E = false;
   L = false;
   G = false;
+
 }
 
 void execcommands(String op, int operando) {
@@ -405,11 +409,6 @@ void execcommands(String op, int operando) {
   }
 }
 
-
-
-int letter = 0;
-int wword = 0;
-
 void setup() {
   // put your setup code here, to run once:
 
@@ -426,17 +425,14 @@ void setup() {
   for (auto i : leds) {
     pinMode(i, OUTPUT);
   }
-
-
   pinMode(BUZZER  , OUTPUT);
   Serial.println("READY TO GO!");
   return;
 }
 
 void loop() {
-
-  if (bluetooth.available()) {
-    char c = bluetooth.read();
+  if (Serial.available()) {
+    char c = Serial.read();
     if (c == '$') {
       PC = 0;
       while (PC != -1) {
@@ -444,15 +440,20 @@ void loop() {
         String opcode = com.substring(0, 2);
         bool ende = com[2] == '%';
         int operando;
-        if (ende) {
-          operando = (int) MEM[com.substring(3).toInt()];
+        if (opcode == "ST") {
+          operando = com.substring(3).toInt();
+        } else if (ende) {
+          String buff = MEM[com.substring(3).toInt()];
+          operando = buff.toInt();
         } else {
           operando = com.substring(2).toInt();
         }
         execcommands(opcode, operando);
       }
+      wword = 0;
+      letter = 0;
     } else if (c == ';') {
-      wword = (wword + 1) % 20;
+      wword = (wword + 1) % PALAVRAS;
     } else {
       MEM[wword][letter] = c;
       letter = (letter + 1) % 6;

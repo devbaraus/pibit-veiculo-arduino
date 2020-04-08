@@ -1,56 +1,67 @@
-function variableToName(value_name) {
-  if (isNaN(parseInt(value_name)) && value_name != '') {
-    value_name = "$"+value_name
+function variableToName(value_name, func_name) {
+  if(value_name.split('\n').filter(a => a != '').length == 1){
+    if (/(gu|gd|gl|gt)/gi.test(value_name)) {
+      value_name = value_name.replace(/(\(|\))/gi, "")
+      value_name = `${value_name}`
+    }
+    else if (isNaN(parseInt(value_name)) && value_name != '') {
+      value_name = func_name + "$" + value_name
+    }  else {
+      value_name = func_name + value_name
+    }
+  }  else {
+    value_name = func_name + value_name
   }
+  
   return value_name
 }
 
 Blockly.JavaScript['move_frente'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `MF${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "MF")}\n`;
   return code;
 };
 
 Blockly.JavaScript['move_tras'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `MT${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "MT")}\n`;
   return code;
 };
 
 Blockly.JavaScript['vira_esquerda'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `VE${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "VE")}\n`;
   return code;
 };
 
 Blockly.JavaScript['vira_direita'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `VD${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "VD")}\n`;
   return code;
 };
 
 Blockly.JavaScript['faz_nada'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `FN${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "FN")}\n`;
   return code;
 };
 
 Blockly.JavaScript['buzzer_freq'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `BF${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "BF")}\n`;
   return code;
 };
 
 Blockly.JavaScript['buzzer_toca'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `BT${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "BT")}\n`;
   return code;
 };
 
@@ -58,41 +69,43 @@ Blockly.JavaScript['get_luminosidade'] = function (block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `GL\n`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['get_umidade'] = function (block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `GU\n`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['get_temperatura'] = function (block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `GT\n`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['get_distancia'] = function (block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `GD\n`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['led_liga'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `LL${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "LL")}\n`;
+
   return code;
 };
 
 Blockly.JavaScript['led_desliga'] = function (block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = `LD${variableToName(value_name)}\n`;
+  var code = `${variableToName(value_name, "LL")}\n`;
+
   return code;
 };
 
@@ -138,76 +151,49 @@ Blockly.JavaScript['block_if_else'] = function (block) {
 // };
 
 Blockly.JavaScript['block_cond'] = function (block) {
-  var value_cond1 = Blockly.JavaScript.valueToCode(block, 'cond1', Blockly.JavaScript.ORDER_NONE).replace("\n", "").replace(/(\(|\))/g, '')
+  var value_cond1 = Blockly.JavaScript.valueToCode(block, 'cond1', Blockly.JavaScript.ORDER_ATOMIC).replace("\n", "").replace(/(\(|\))/g, '')
   var dropdown_comp = block.getFieldValue('comp');
   var value_cond2 = Blockly.JavaScript.valueToCode(block, 'cond2', Blockly.JavaScript.ORDER_ATOMIC).replace("\n", "").replace(/(\(|\))/g, '')
-  let inverted = false
-  let variable = false
 
-  if (isNaN(parseInt(value_cond1)) && value_cond1 != '') {
-    value_cond1 = value_cond1
-    variable = true
-  } else {
-    value_cond1 = "LO$" + value_cond1
-  }
-  if (/(gu|gd|gl|gt)/gi.test(value_cond2)) {
-    let aux = value_cond1
-    value_cond1 = value_cond2
-    value_cond2 = aux
-    inverted = true
-    variable = true
-  } else if (isNaN(parseInt(value_cond2)) && value_cond2 != '') {
-    value_cond2 = value_cond2
-    variable = true
-  } else {
-    value_cond2 = value_cond2
-    variable = false
-  }
-
+  value_cond2 = variableToName(value_cond2, variableToName(value_cond1, "LO") + "\nCM")
+  
   var opcode = "";
   if (dropdown_comp == 'EQ') {
-    opcode = !inverted ? "NE" : "NE";
+    opcode = "NE";
   } else if (dropdown_comp == 'DIF') {
-    opcode = !inverted ? "JE" : "JE";
+    opcode = "JE";
   } else if (dropdown_comp == 'LS') {
-    opcode = !inverted ? "GE" : "JL";
+    opcode = "GE";
   } else if (dropdown_comp == 'LE') {
-    opcode = !inverted ? "JG" : "LE";
+    opcode = "JG";
   } else if (dropdown_comp == 'GT') {
-    opcode = !inverted ? "LE" : "GE";
+    opcode = "LE";
   } else if (dropdown_comp == 'GE') {
-    opcode = !inverted ? "JL" : "GE";
+    opcode = "JL";
   }
   // TODO: Assemble JavaScript into code variable.
-  var code = [value_cond1, (variable ? 'CM$' : 'CM') + value_cond2, `${opcode}`]
+  var code = [value_cond2, `${opcode}`]
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['block_math'] = function (block) {
-  var value_math1 = Blockly.JavaScript.valueToCode(block, 'math1', Blockly.JavaScript.ORDER_NONE);
+  var value_math1 = Blockly.JavaScript.valueToCode(block, 'math1', Blockly.JavaScript.ORDER_ATOMIC);
   var dropdown_op = block.getFieldValue('op');
   var value_math2 = Blockly.JavaScript.valueToCode(block, 'math2', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var opcode = "";
-  var load_math1 = "";
-  if (isNaN(parseInt(value_math1))) {
-    load_math1 = value_math1.replace("\n", "");
-  } else {
-    load_math1 = `LO${value_math1}`;
-  }
   if (dropdown_op == 'PS') {
-    opcode = "AD";
+    value_math2 = variableToName(value_math2, variableToName(value_math1, "LO") + "\nAD");
   } else if (dropdown_op == 'MI') {
-    opcode = "SU";
+    value_math2 = variableToName(value_math2, variableToName(value_math1, "LO") + "\nSU");
   } else if (dropdown_op == 'ML') {
-    opcode = "MU";
+    value_math2 = variableToName(value_math2, variableToName(value_math1, "LO") + "\nMU");
   } else if (dropdown_op == 'DI') {
-    opcode = "DI";
+    value_math2 = variableToName(value_math2, variableToName(value_math1, "LO") + "\nDI");
   }
-  var code = `${load_math1}\n${opcode}${value_math2}\n`;
+  var code = `${value_math2}\n`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript['block_loop'] = function (block) {
@@ -218,5 +204,16 @@ Blockly.JavaScript['block_loop'] = function (block) {
   // value_se[2] += (2 + statements_faca.split('\n').length)
   // TODO: Assemble JavaScript into code variable.
   var code = `${value_cond.join('\n')}\n${statements_name}JM$\nFN$\n`;
+  return code;
+};
+
+Blockly.JavaScript['block_repeat'] = function (block) {
+  var value_times = Blockly.JavaScript.valueToCode(block, 'times', Blockly.JavaScript.ORDER_ATOMIC);
+  var statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+  var var_name = Math.round(Math.random() * Date.now()).toString(16)
+  value_times = variableToName(value_times, `LO$${var_name}\nCM`)
+  var init = `var ${var_name}\n${var_name} = 0\n${value_times}\nGE$\nAD1\nST$${var_name}`
+  // TODO: Assemble JavaScript into code variable.
+  var code = `${init}\n${statements_name}JM$\nFN$\n`;
   return code;
 };
