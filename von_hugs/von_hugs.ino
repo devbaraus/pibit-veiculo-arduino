@@ -431,8 +431,8 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available()) {
-    char c = Serial.read();
+  if (bluetooth.available()) {
+    char c = bluetooth.read();
     if (c == '$') {
       PC = 0;
       while (PC != -1) {
