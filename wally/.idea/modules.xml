@@ -5,9 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/Kotlin-Bluetooth-master.iml" filepath="$PROJECT_DIR$/Kotlin-Bluetooth-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/Kotlin-Bluetooth-master-app.iml" filepath="$PROJECT_DIR$/app/Kotlin-Bluetooth-master-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/KotlinBluetoothTutorial.iml" filepath="$PROJECT_DIR$/KotlinBluetoothTutorial.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Wally.iml" filepath="$PROJECT_DIR$/Wally.iml" group="Wally" />
+      <module fileurl="file://$PROJECT_DIR$/app/Wally-app.iml" filepath="$PROJECT_DIR$/app/Wally-app.iml" group="Wally/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/wally.iml" filepath="$PROJECT_DIR$/wally.iml" group="wally" />
-      <module fileurl="file://$PROJECT_DIR$/app/wally-app.iml" filepath="$PROJECT_DIR$/app/wally-app.iml" group="wally/app" />
     </modules>
   </component>
 </project>
