@@ -40,7 +40,7 @@ Ultrasonic ultrasonic(PINTRIGGER, PINECHO);
 //PHOTORESISTOR
 #define PHOTO 0
 
-#define PALAVRAS 120
+#define PALAVRAS 20
 
 //LEDS
 int leds[] = {2, 4};
@@ -139,6 +139,11 @@ void faz_nada(int tempo) {
   Serial.print(tempo);
   Serial.println(" segundos" );
   delay(tempo * 1000);
+  PC++;
+}
+
+void nop() {
+  Serial.print("NOPE!!!");
   PC++;
 }
 
@@ -338,13 +343,12 @@ void mul(int val) {
 
 void halt() {
   // MU9999
-  // Serial.println("Multiplicando o AC pelo valor " , val );
-  AC = -1;
+  Serial.println("HALT");
+  AC = 0;
   PC = -1;
   E = false;
   L = false;
   G = false;
-
 }
 
 void execcommands(String op, int operando) {
@@ -404,19 +408,23 @@ void execcommands(String op, int operando) {
     mul(operando);
   } else if (op == "HT") {
     halt();
-  } else if (op == "PT") {
-    Serial.print(operando);
+  } else {
+    nop();
   }
 }
 
 void setup() {
   // put your setup code here, to run once:
-
+  for (int i = 0; i < PALAVRAS; i++) {
+    String buff = "000000";
+    buff.toCharArray(MEM[i], 7);
+  }
   Serial.begin(9600);
   bluetooth.begin(9600);
   //dht.begin();
 
   delay(100);
+
 
   pinMode(PEF, OUTPUT);
   pinMode(PEB, OUTPUT);
@@ -431,10 +439,10 @@ void setup() {
 }
 
 void loop() {
-  if (bluetooth.available()) {
-    char c = bluetooth.read();
+  if (Serial.available()) {
+    char c = Serial.read();
+    PC = 0;
     if (c == '$') {
-      PC = 0;
       while (PC != -1) {
         String com = MEM[PC];
         String opcode = com.substring(0, 2);
@@ -451,7 +459,11 @@ void loop() {
         execcommands(opcode, operando);
       }
       wword = 0;
-      letter = 0;
+      letter = -1;
+      for (int i = 0; i < PALAVRAS; i++) {
+        String buff = "000000";
+        buff.toCharArray(MEM[i], 7);
+      }
     } else if (c == ';') {
       wword = (wword + 1) % PALAVRAS;
     } else {
