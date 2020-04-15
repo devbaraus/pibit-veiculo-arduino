@@ -79,21 +79,22 @@
     </category>
   </xml>
   <script>
-    Array.prototype.last = function () {
-      return this[this.length - 1];
-    };
+    
     var workspace = Blockly.inject("blocklyDiv", {
       media: "../../media",
       toolbox: document.getElementById("toolbox")
     });
 
+    Array.prototype.last = function () {
+      return this[this.length - 1];
+    };
 
     function showCode() {
       Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
       var code = Blockly.JavaScript.workspaceToCode(workspace);
       let vcounter = 0;
       let variables = {}
-      let mem = 19;
+      let mem = 119;
       let arr = code
         .replace(/(\;)/gi, '')
         .split("\n")
@@ -124,10 +125,6 @@
           return item.replace(/( *)/g, "")
         })
         .filter(item => !(item === ""))
-
-      console.log(code)
-      console.log(arr)
-      console.log(variables)
       let stack = [];
       // SUBISTITUI OS NOMES DAS VARIAVEIS PELA POSICAO NA MEMORIA
       for (let i = 0; i < arr.length; i++) {
@@ -150,12 +147,10 @@
         }
         // load o valor de uma variavel
         if (!(/(mf|mt|ve|vd|fn|bf|bt|gl|gu|gt|gd|ll|ld|cm|ci|jm|ne|je|jl|jg|ge|le|lo|li|st|ad|su|di|mu|ht|je|jl|jg|ge|le|fe)/gi.test(arr[i]))) {
-          console.log(arr[i])
           arr[i] = 'LO%' + variables[arr[i]].toString().padStart(3, "0")
         } 
         // atribui a posição de memoria ao comando
         else if (/(^\w{2}\$)/gi.test(arr[i]) && !(/(jm|ne|je|jl|jg|ge|fn|fe)/gi.test(arr[i]))) {
-          console.log(arr[i])
           arr[i] = arr[i].match(/(^\w{2})/gi) + "%" + variables[arr[i].substring(3)].toString().padStart(3, "0")
         }
       }
@@ -176,7 +171,8 @@
           stack.push(i - 1)
         }
       }
-      console.log(arr.map((item, index) => item.replace(/(?<=^..)(.*)/g, item => item.padStart(4, "0"))).join(";") + ";HT0000;$")
+      codigo = arr.map((item, index) => item.replace(/(?<=^..)(.*)/g, item => item.padStart(4, "0"))).join(";") + ";HT0000;$"
+      console.log(codigo)
     }
   </script>
 </body>

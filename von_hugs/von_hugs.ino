@@ -40,7 +40,7 @@ Ultrasonic ultrasonic(PINTRIGGER, PINECHO);
 //PHOTORESISTOR
 #define PHOTO 0
 
-#define PALAVRAS 20
+#define PALAVRAS 120
 
 //LEDS
 int leds[] = {2, 4};
@@ -439,8 +439,9 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available()) {
-    char c = Serial.read();
+  if (bluetooth.available()) {
+    char c = bluetooth.read();
+    Serial.print(c);
     PC = 0;
     if (c == '$') {
       while (PC != -1) {
