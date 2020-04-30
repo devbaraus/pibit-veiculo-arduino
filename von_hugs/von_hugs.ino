@@ -40,7 +40,7 @@ Ultrasonic ultrasonic(PINTRIGGER, PINECHO);
 //PHOTORESISTOR
 #define PHOTO 0
 
-#define PALAVRAS 120
+#define PALAVRAS 20
 
 //LEDS
 int leds[] = {2, 4};
@@ -351,6 +351,31 @@ void halt() {
   G = false;
 }
 
+void bluetooth_write(String toSend) {
+  Serial.println(toSend);
+  String result = toSend + "\n";
+  char payload[result.length() + 1];
+  result.toCharArray(payload, sizeof(payload));
+  bluetooth.write((uint8_t *)payload, sizeof(payload));
+}
+
+void send_getters() {
+  //TEMPERATURA
+  String res = (String)dht.readTemperature()+";";
+
+  //UMIDADE
+  res += (String) dht.readHumidity() + ";";
+
+  //DISTANCIA
+  long microsec = ultrasonic.timing();
+  res += (String) ultrasonic.convert(microsec, Ultrasonic::CM) + ";";
+
+  //LUMINOSIDADE
+  res += (String) analogRead(PHOTO);
+  bluetooth_write(res);
+  PC++;
+}
+
 void execcommands(String op, int operando) {
   if (op == "MF") {
     move_frente(operando);
@@ -408,6 +433,8 @@ void execcommands(String op, int operando) {
     mul(operando);
   } else if (op == "HT") {
     halt();
+  } else if (op == "SG") {
+    send_getters();
   } else {
     nop();
   }
@@ -444,6 +471,9 @@ void loop() {
     Serial.print(c);
     PC = 0;
     if (c == '$') {
+      for (int i = 0; i < PALAVRAS; i++) {
+        Serial.println(MEM[i]);
+      }
       while (PC != -1) {
         String com = MEM[PC];
         String opcode = com.substring(0, 2);

@@ -19,10 +19,11 @@ import java.io.InputStream
 import java.util.*
 
 
-class ControlActivity: AppCompatActivity() {
-    var sensor:Int = 0
+class ControlActivity : AppCompatActivity() {
+    var sensor: Int = 0
     val TAG = "asinc"
     val BASE_URL = "file:///android_asset/index.html"
+
     companion object {
         var m_myUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
         var m_bluetoothSocket: BluetoothSocket? = null
@@ -37,6 +38,17 @@ class ControlActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.control_layout)
+
+        control_getter.setOnClickListener {
+            sendCommand("SG0000;HT0000;$\n")
+            var text = receiveCommand()
+            var array = text.split(";")
+            getter_temperatura.text = "Temp: " + if (array[0].toString() == "NAN")  "0.0" else array[0].toString()
+            getter_umidade.text =  "Umi: " + if (array[1].toString() == "NAN")  "0.0" else array[1].toString()
+            getter_distancia.text = "Dist: " + if (array[2].toString() == "NAN")  "0.0" else array[2].toString()
+            getter_luminosidade.text =  "Lum: " + if (array[3].toString() == "NAN")  "0.0" else array[3].toString()
+        }
+
         //get information from the other activity
         m_address = intent.getStringExtra(SelectDeviceActivity.EXTRA_ADDRESS)
 
@@ -61,9 +73,9 @@ class ControlActivity: AppCompatActivity() {
         webView.settings.useWideViewPort = true
         webView.settings.builtInZoomControls = true
 
-        try{
+        try {
             ConnectToDevice(this).execute()
-        }catch (e:IOException ){
+        } catch (e: IOException) {
             Log.d(TAG, "NAO CONECTADO")
             e.printStackTrace()
         }
@@ -74,46 +86,53 @@ class ControlActivity: AppCompatActivity() {
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
-                    injectJavaScriptFunction()
+                injectJavaScriptFunction()
             }
         }
     }
 
     //go back with the application inside the webView or if there is no history close de app
     override fun onBackPressed() {
-        if(webView.canGoBack()){
+        if (webView.canGoBack()) {
             webView.goBack()
-        }else{
+        } else {
             super.onBackPressed()
         }
     }
+
     //receive comands from arduino
-    private fun receiveCommand() {
-        try{
+    private fun receiveCommand(): String {
+        try {
             var message: InputStream? = null
             message = m_bluetoothSocket!!.getInputStream()
-            var received = message.read()
-            Log.d("ASDASD", received.toInt().toString())
-            sensor = received.toInt()
-        } catch(e: IOException) {
+            var received: Int
+            var text = ""
+            do {
+                received = message.read()
+                text += received.toChar().toString()
+            } while (received != 0)
+            return text
+        } catch (e: IOException) {
             e.printStackTrace()
-            Log.d("ASDASD", "NAO RECEBENDO")
+            return ""
         }
     }
+
     //sends comands through bluetooth
     private fun sendCommand(input: String) {
         if (m_bluetoothSocket != null) {
-            try{
+            try {
                 m_bluetoothSocket!!.outputStream.write(input.toByteArray())
                 Log.d(TAG, "ENVIADO")
-            } catch(e: IOException) {
+            } catch (e: IOException) {
                 e.printStackTrace()
                 Log.d(TAG, "NAO ENVIADO")
             }
-        }else{
+        } else {
             Log.d(TAG, "Não encontrei o socket --")
         }
     }
+
     //close the socket and disconnect from the device
     private fun disconnect() {
         if (m_bluetoothSocket != null) {
@@ -158,6 +177,7 @@ class ControlActivity: AppCompatActivity() {
             }
             return null
         }
+
         //basically waits the async task finishes
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
@@ -170,6 +190,7 @@ class ControlActivity: AppCompatActivity() {
             m_progress.dismiss()
         }
     }
+
     //method to do asynch   ronous tasks
     class doAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void?): Void? {
@@ -191,11 +212,11 @@ class ControlActivity: AppCompatActivity() {
         fun codeFromWeb(fromWeb: String): Int {
             val codigo = fromWeb
             val code = codigo.split("\n")
-            Log.d("testo",code.toString())
-            for(cod in code) {
-                if(cod != ";" && cod != ""){
-                    sendCommand(cod.trim()+"\n")
-                    if (cod == "GL"||cod == "GU"||cod == "GT"||cod == "GD"){
+            Log.d("testo", code.toString())
+            for (cod in code) {
+                if (cod != ";" && cod != "") {
+                    sendCommand(cod.trim() + "\n")
+                    if (cod == "GL" || cod == "GU" || cod == "GT" || cod == "GD") {
                         receiveCommand()
                     }
                 }

@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">Wally</string>
+    <string name="app_name">Von Hugs</string>
 
     <string name="refresh">Refresh</string>
+    <string name="getter">Atualizar</string>
+    <string name="run">Rodar</string>
     <string name="one">Executar</string>
     <string name="many">Executar Tudo</string>
     <string name="disconnect">Desconectar</string>
