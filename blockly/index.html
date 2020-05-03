@@ -41,7 +41,7 @@
       Run Javascrit
     </button>
   </p>
-  <div id="blocklyDiv" style="height: 800px; width: 900px;"></div>
+  <div id="blocklyDiv" style="height: 800px; width: 98vw;"></div>
   <xml id="toolbox" style="display: none;">
     <category name="Ação" colour="#5ba55b">
       <block type="move_frente"></block>
@@ -81,7 +81,7 @@
   <script>
     
     var workspace = Blockly.inject("blocklyDiv", {
-      media: "../../media",
+      media: "./media/",
       toolbox: document.getElementById("toolbox")
     });
 

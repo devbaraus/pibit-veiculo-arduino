@@ -34,13 +34,7 @@
 
 <body>
     <div id = "teste"></div>
-    <p>
-        <button onclick="showCode()" style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;"
-                unselectable="on">
-            Rodar código
-        </button>
-    </p>
-    <div id="blocklyDiv" style="height: 480px; width: 300px;"></div>
+    <div id="blocklyDiv" style="height: 480px; width: 320px;"></div>
     <xml id="toolbox" style="display: none;">
         <category name="Ação" colour="#5ba55b">
             <block type="move_frente"></block>
@@ -78,7 +72,7 @@
         </category>
     </xml>
     <script>
-    var workspace = Blockly.inject('blocklyDiv', {media: '../../media', toolbox: document.getElementById('toolbox')})
+    var workspace = Blockly.inject('blocklyDiv', {media: './media/', toolbox: document.getElementById('toolbox')})
 
      Array.prototype.last = function () {
       return this[this.length - 1];

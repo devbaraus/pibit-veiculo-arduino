@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.webkit.*
 import kotlinx.android.synthetic.main.control_layout.*
+import org.jetbrains.anko.toast
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -49,6 +50,8 @@ class ControlActivity : AppCompatActivity() {
             getter_luminosidade.text =  "Lum: " + if (array[3].toString() == "NAN")  "0.0" else array[3].toString()
         }
 
+
+
         //get information from the other activity
         m_address = intent.getStringExtra(SelectDeviceActivity.EXTRA_ADDRESS)
 
@@ -72,6 +75,10 @@ class ControlActivity : AppCompatActivity() {
         //zoom controll
         webView.settings.useWideViewPort = true
         webView.settings.builtInZoomControls = true
+
+        control_run.setOnClickListener{
+            webView.loadUrl("javascript:showCode()")
+        }
 
         try {
             ConnectToDevice(this).execute()
