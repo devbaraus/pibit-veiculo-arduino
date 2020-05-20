@@ -23,28 +23,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Dist: 0.0" />
+            android:text="D: 0.0"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/getter_temperatura"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Temp: 0.0" />
+            android:text="T: 0.0"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/getter_umidade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Umi: 0.0" />
+            android:text="U: 0.0"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/getter_luminosidade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Lum: 0.0" />
+            android:text="L: 0.0"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -62,13 +66,13 @@
 
     <Button
         android:id="@+id/control_disconnect"
-        android:layout_width="98dp"
-        android:layout_height="41dp"
-        android:textSize="8sp"
+        android:layout_width="98sp"
+        android:layout_height="40sp"
         android:layout_margin="16dp"
-        android:padding="16dp"
+        android:padding="2dp"
         android:src="@drawable/voltar"
         android:text="@string/disconnect"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
@@ -78,13 +82,13 @@
 
     <Button
         android:id="@+id/control_getter"
-        android:layout_width="98dp"
-        android:layout_height="41dp"
+        android:layout_width="98sp"
+        android:layout_height="40sp"
         android:layout_margin="16dp"
-        android:padding="16dp"
+        android:padding="2dp"
         android:src="@drawable/voltar"
         android:text="@string/getter"
-        android:textSize="8sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -94,13 +98,13 @@
 
     <Button
         android:id="@+id/control_run"
-        android:layout_width="98dp"
-        android:layout_height="41dp"
+        android:layout_width="98sp"
+        android:layout_height="40sp"
         android:layout_margin="16dp"
-        android:padding="16dp"
+        android:padding="2dp"
         android:src="@drawable/voltar"
         android:text="@string/run"
-        android:textSize="8sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
