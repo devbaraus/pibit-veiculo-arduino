@@ -466,14 +466,13 @@ void setup() {
 }
 
 void loop() {
-  if (bluetooth.available()) {
-    char c = bluetooth.read();
+  if (Serial.available()) {
+    char c = Serial.read();
     Serial.print(c);
+    
     PC = 0;
     if (c == '$') {
-      for (int i = 0; i < PALAVRAS; i++) {
-        Serial.println(MEM[i]);
-      }
+      Serial.println("");
       while (PC != -1) {
         String com = MEM[PC];
         String opcode = com.substring(0, 2);
