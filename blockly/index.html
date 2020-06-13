@@ -79,10 +79,20 @@
     </category>
   </xml>
   <script>
-    
+
     var workspace = Blockly.inject("blocklyDiv", {
       media: "./media/",
-      toolbox: document.getElementById("toolbox")
+      toolbox: document.getElementById("toolbox"),
+      zoom:
+      {
+        controls: true,
+        wheel: false,
+        startScale: 0.6,
+        maxScale: 3,
+        minScale: 0.3,
+        scaleSpeed: 1.2
+      },
+      trashcan: false
     });
     workspace.RTL = true
 
@@ -101,7 +111,7 @@
         .split("\n")
         .map((item, index) => {
           // ADICIONA OS VARIAVEIS EM UMA HASH
-          if(/(\w)*( \= var )/gi.test(item)){
+          if (/(\w)*( \= var )/gi.test(item)) {
             let vav = item.replace('var ', '').replace(/( *)/g, "").split(',')
             let k = ""
             vav.forEach((i, index) => {
@@ -130,13 +140,13 @@
       // SUBISTITUI OS NOMES DAS VARIAVEIS PELA POSICAO NA MEMORIA
       for (let i = 0; i < arr.length; i++) {
         // altera uma variavel por +1 ou -1
-        if(/(^\w*=)+(\(.*\))/gi.test(arr[i].replace(/( *)/g, ''))){
+        if (/(^\w*=)+(\(.*\))/gi.test(arr[i].replace(/( *)/g, ''))) {
           arr.splice(i + 2, 0, `ST%${variables[arr[i].match(/(^\w*)/gi)].toString().padStart(3, "0")}`)
           var signal = arr[i].match(/(\+|\-)/gi)
-          signal = signal.length > 1 ? signal.reduce((a, b) => (a+1) * (b+1)) : signal + 1
-          if(parseInt(signal) > 0){
+          signal = signal.length > 1 ? signal.reduce((a, b) => (a + 1) * (b + 1)) : signal + 1
+          if (parseInt(signal) > 0) {
             arr.splice(i + 1, 0, `AD${arr[i].match(/(\d*)/gi).filter(i => i != "")[1]}`)
-          }else{
+          } else {
             arr.splice(i + 1, 0, `SU${arr[i].match(/(\d*)/gi).filter(i => i != "")[1]}`)
           }
           arr[i] = 'LO%' + variables[arr[i].match(/(^\w*)/gi, '')[0]].toString().padStart(3, "0")
@@ -149,7 +159,7 @@
         // load o valor de uma variavel
         if (!(/(mf|mt|ve|vd|fn|bf|bt|gl|gu|gt|gd|ll|ld|cm|ci|jm|ne|je|jl|jg|ge|le|lo|li|st|ad|su|di|mu|ht|je|jl|jg|ge|le|fe)/gi.test(arr[i]))) {
           arr[i] = 'LO%' + variables[arr[i]].toString().padStart(3, "0")
-        } 
+        }
         // atribui a posição de memoria ao comando
         else if (/(^\w{2}\$)/gi.test(arr[i]) && !(/(jm|ne|je|jl|jg|ge|fn|fe)/gi.test(arr[i]))) {
           arr[i] = arr[i].match(/(^\w{2})/gi) + "%" + variables[arr[i].substring(3)].toString().padStart(3, "0")
