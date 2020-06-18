@@ -28,14 +28,14 @@ class SelectDeviceActivity : AppCompatActivity() {
 
         m_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if(m_bluetoothAdapter == null) {
-            toast("this device doesn't support bluetooth")
+            toast("Este dispositivo não suporta Bluetooth")
             return
         }
         if(!m_bluetoothAdapter!!.isEnabled) {
             val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableBluetoothIntent, REQUEST_ENABLE_BLUETOOTH)
         }
-
+        pairedDeviceList()
         select_device_refresh.setOnClickListener{ pairedDeviceList() }
 
     }
@@ -43,17 +43,19 @@ class SelectDeviceActivity : AppCompatActivity() {
     private fun pairedDeviceList() {
         m_pairedDevices = m_bluetoothAdapter!!.bondedDevices
         val list : ArrayList<BluetoothDevice> = ArrayList()
+        val list_name : ArrayList<String> = ArrayList()/////////////////////////////
 
         if (!m_pairedDevices.isEmpty()) {
             for (device: BluetoothDevice in m_pairedDevices) {
                 list.add(device)
+                list_name.add(device.name)
                 Log.i("device", ""+device)
             }
         } else {
-            toast("no paired bluetooth devices found")
+            toast("Nenhum dispositivo Bluetooth encontrado")
         }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list_name)
         select_device_list.adapter = adapter
         select_device_list.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val device: BluetoothDevice = list[position]
@@ -70,12 +72,12 @@ class SelectDeviceActivity : AppCompatActivity() {
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
             if (resultCode == Activity.RESULT_OK) {
                 if (m_bluetoothAdapter!!.isEnabled) {
-                    toast("Bluetooth has been enabled")
+                    toast("Bluetooth foi ativado")
                 } else {
-                    toast("Bluetooth has been disabled")
+                    toast("Bluetooth foi desativado")
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                toast("Bluetooth enabling has been canceled")
+                toast("Ativação do Bluetooth foi cancelada")
             }
         }
     }

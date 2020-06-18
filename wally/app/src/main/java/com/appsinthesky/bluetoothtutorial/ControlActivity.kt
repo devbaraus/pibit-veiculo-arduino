@@ -12,9 +12,13 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.webkit.*
+import android.view.MotionEvent
+import android.view.View.OnTouchListener
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.control_layout.*
-import org.jetbrains.anko.toast
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -72,9 +76,10 @@ class ControlActivity : AppCompatActivity() {
         //load the content
         webView.loadUrl("file:///android_asset/index.html")
 
-        //zoom controll
-        webView.settings.useWideViewPort = true
-        webView.settings.builtInZoomControls = true
+        //Chossing the initial default zoom
+        webView.setInitialScale(330)
+        //hiding scroll bars
+        //webView.setOnTouchListener(OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
 
         control_run.setOnClickListener{
             webView.loadUrl("javascript:showCode()")

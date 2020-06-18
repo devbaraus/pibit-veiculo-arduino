@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">Von Hugs</string>
 
-    <string name="refresh">Refresh</string>
+    <string name="refresh">Atualizar dispositivos pareados</string>
     <string name="getter">Atualizar</string>
     <string name="run">Rodar</string>
     <string name="one">Executar</string>
     <string name="many">Executar Tudo</string>
     <string name="disconnect">Desconectar</string>
+    <string name="texto_inicial">Selecione o dispositivo para comunicação</string>
 </resources>

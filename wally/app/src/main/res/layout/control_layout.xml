@@ -24,31 +24,35 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="D: 0.0"
-            android:textSize="18sp" />
+            android:fontFamily="casual"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/getter_temperatura"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="casual"
             android:text="T: 0.0"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/getter_umidade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:layout_weight="1"
             android:text="U: 0.0"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/getter_luminosidade"
             android:layout_width="wrap_content"
+            android:fontFamily="casual"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="L: 0.0"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -70,6 +74,7 @@
         android:layout_height="40sp"
         android:layout_margin="16dp"
         android:padding="2dp"
+        android:fontFamily="casual"
         android:src="@drawable/voltar"
         android:text="@string/disconnect"
         android:textSize="12sp"
@@ -87,6 +92,7 @@
         android:layout_margin="16dp"
         android:padding="2dp"
         android:src="@drawable/voltar"
+        android:fontFamily="casual"
         android:text="@string/getter"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,6 +108,7 @@
         android:layout_height="40sp"
         android:layout_margin="16dp"
         android:padding="2dp"
+        android:fontFamily="casual"
         android:src="@drawable/voltar"
         android:text="@string/run"
         android:textSize="12sp"
